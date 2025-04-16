@@ -2,6 +2,8 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  margin-left: 250px; /* Match sidebar width */
+  width: calc(100% - 250px); /* Adjust width to account for sidebar */
 }
 
 .dashboard-container h1 {
@@ -116,6 +118,8 @@
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 1rem;
+    margin-left: 0;
+    width: 100%;
   }
 
   .bookings-table th,
