@@ -1,43 +1,50 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import BookingForm from './components/BookingForm';
+import Dashboard from './components/Dashboard';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentView, setCurrentView] = useState('home');
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  const handleLogin = (status) => {
-    setIsAuthenticated(status);
-  };
-
-  const renderContent = () => {
-    switch (currentView) {
-      case 'booking':
-        return <BookingForm />;
-      default:
-        return (
-          <header className="App-header">
-            <h1>Welcome to the RPTB Services</h1>
-          </header>
-        );
-    }
+  const handleLogin = (success) => {
+    setIsAuthenticated(success);
   };
 
   return (
-    <div className="App">
-      {!isAuthenticated ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <div className="home-container">
-          <Sidebar onViewChange={setCurrentView} />
-          <main className="main-content">
-            {renderContent()}
-          </main>
-        </div>
-      )}
-    </div>
+    <Router>
+      <div className="app">
+        <Sidebar isAuthenticated={isAuthenticated} />
+        <main className="main-content">
+          <Routes>
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route
+              path="/book"
+              element={
+                isAuthenticated ? (
+                  <BookingForm />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                isAuthenticated ? (
+                  <Dashboard />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route path="/" element={<Navigate to="/book" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 

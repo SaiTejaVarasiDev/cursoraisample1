@@ -1,28 +1,35 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
-function Sidebar({ onViewChange }) {
-  const handleBookingClick = () => {
-    onViewChange('booking');
-  };
+const Sidebar = ({ isAuthenticated }) => {
+  const location = useLocation();
 
-  const handleDashboardClick = () => {
-    onViewChange('dashboard');
-  };
-
-  const handleReportsClick = () => {
-    onViewChange('reports');
-  };
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="sidebar">
-      <nav>
-        <button className="sidebar-button" onClick={handleBookingClick}>Request Booking</button>
-        <button className="sidebar-button" onClick={handleDashboardClick}>Dashboard</button>
-        <button className="sidebar-button" onClick={handleReportsClick}>Reports</button>
+      <div className="sidebar-header">
+        <h2>RPTB Services</h2>
+      </div>
+      <nav className="sidebar-nav">
+        <Link
+          to="/book"
+          className={`nav-item ${location.pathname === '/book' ? 'active' : ''}`}
+        >
+          Book Appointment
+        </Link>
+        <Link
+          to="/dashboard"
+          className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}
+        >
+          Dashboard
+        </Link>
       </nav>
     </div>
   );
-}
+};
 
 export default Sidebar; 
