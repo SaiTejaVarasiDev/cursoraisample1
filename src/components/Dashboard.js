@@ -12,29 +12,54 @@ const Dashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/bookings`);
+      const apiUrl = 'https://m4qf3xpe0f.execute-api.ap-south-1.amazonaws.com/prod/bookings';
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies if needed
+      });
+
       if (!response.ok) {
-        throw new Error('Failed to fetch bookings');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Received non-JSON response from server');
+      }
+
       const data = await response.json();
+      
+      if (!data || !Array.isArray(data.bookings)) {
+        throw new Error('Invalid data format received from server');
+      }
+
       setBookings(data.bookings);
       setLoading(false);
     } catch (err) {
-      setError(err.message);
+      console.error('Error fetching bookings:', err);
+      setError(err.message || 'Failed to fetch bookings. Please try again later.');
       setLoading(false);
     }
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (err) {
+      return dateString; // Return original string if parsing fails
+    }
   };
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'confirmed':
         return 'status-confirmed';
       case 'pending':
@@ -57,7 +82,24 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="dashboard-container">
-        <div className="error">Error: {error}</div>
+        <div className="error">
+          <h3>Error Loading Bookings</h3>
+          <p>{error}</p>
+          <button onClick={fetchBookings} className="retry-button">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (bookings.length === 0) {
+    return (
+      <div className="dashboard-container">
+        <h1>Booking Dashboard</h1>
+        <div className="no-bookings">
+          <p>No bookings found.</p>
+        </div>
       </div>
     );
   }
