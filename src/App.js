@@ -16,10 +16,17 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Sidebar isAuthenticated={isAuthenticated} />
-        <main className="main-content">
+        {isAuthenticated && <Sidebar isAuthenticated={isAuthenticated} />}
+        <main className={`main-content ${!isAuthenticated ? 'full-width' : ''}`}>
           <Routes>
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route 
+              path="/login" 
+              element={
+                isAuthenticated ? 
+                <Navigate to="/dashboard" replace /> : 
+                <Login onLogin={handleLogin} />
+              } 
+            />
             <Route
               path="/book"
               element={
@@ -40,7 +47,14 @@ function App() {
                 )
               }
             />
-            <Route path="/" element={<Navigate to="/book" replace />} />
+            <Route 
+              path="/" 
+              element={
+                isAuthenticated ? 
+                <Navigate to="/dashboard" replace /> : 
+                <Navigate to="/login" replace />
+              } 
+            />
           </Routes>
         </main>
       </div>

@@ -18,8 +18,7 @@ const Dashboard = () => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies if needed
+        }
       });
 
       if (!response.ok) {
