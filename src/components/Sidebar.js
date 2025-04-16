@@ -19,12 +19,14 @@ const Sidebar = ({ isAuthenticated }) => {
           to="/book"
           className={`nav-item ${location.pathname === '/book' ? 'active' : ''}`}
         >
+          <i className="fas fa-calendar-plus"></i>
           Book Appointment
         </Link>
         <Link
           to="/dashboard"
           className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}
         >
+          <i className="fas fa-chart-line"></i>
           Dashboard
         </Link>
       </nav>
